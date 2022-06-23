@@ -101,7 +101,7 @@ const Home = () => {
 
 
 
-    type IProperties = {
+/*     type IProperties = {
         _id: string,
         name: string,
         lastname: string,
@@ -109,7 +109,7 @@ const Home = () => {
         amount: number,
         comments: string,
         dob: Date
-    }
+    } */
  
 /*     type AllType = {
         IncomesType: IncomesType[],
@@ -136,7 +136,6 @@ const Home = () => {
     } */
 
 
-        const { UUID } = Realm.BSON;
         const [myUser, setMyUser] = useState<IObjet[] >([]);
 
 
@@ -197,20 +196,20 @@ const Home = () => {
                     realm.create('User', {
                         _id: MyObjectIdUser,
                         name: 'User',
-                        Expenses: {
+                        Incomes: {
+                          _id: MyObjectIdIncome,
+                          category: 'Nike',
+                          amount: 23455,
+                          comments: "commentaire",
+                          dob: new Date() 
+                      },
+                        /* Expenses: {
                              _id: MyObjectIdExpense,
                              category: 'Puma',
                              amount: 1234,
                              comments: "commentaire",
                              dob: new Date() 
-                         }, 
-                          Incomes: {
-                            _id: MyObjectIdIncome,
-                            category: 'Nike',
-                            amount: 23455,
-                            comments: "commentaire",
-                            dob: new Date() 
-                        },
+                         },  */
                 })
             })
             console.log("Add user successfully");
@@ -241,7 +240,7 @@ const Home = () => {
      <View>
         {
             myUser.map((item, index) => (
-                <View>
+                <View key={index}>
                     
                  
                 </View>
