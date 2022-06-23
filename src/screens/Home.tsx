@@ -5,9 +5,13 @@ import {UUID, ObjectId} from 'bson'
 import 'react-native-get-random-values'
 import { v4 as uuid } from 'uuid'
 
+
 uuid
 const Home = () => {
-    
+    const MyObjectIdIncome = new ObjectId();
+    const MyObjectIdUser = new ObjectId();
+    const MyObjectIdExpense = new ObjectId();
+   
 /*     const Icomes = {
         _id: 'uuid',
         name: 'string',
@@ -27,37 +31,25 @@ const Home = () => {
         dob: 'date'
     } */
     
+
+
+
     
     const User = {
         name: "User",
         primaryKey: "_id",
         properties: {
-          _id: "uuid",
+          _id: "objectId",
           name: "string",
-          Incomes: {type : "list", objectType: "Incomes"},
-          Expenses: {type : "list", objectType: "Expenses"}
+          Incomes: "Incomes?",
+          Expenses: "Expenses?",
         }
     } 
-    const Expenses = {
-        name: "Expenses",
-        primaryKey: "_id",
-        properties: {
-            _id: "uuid",
-            name: "string",
-            lastname: "string",
-            category: "string",
-            amount: "int",
-            comments: "string",
-            dob: "date"
-        }
-    }
     const Incomes = {
         name: "Incomes",
-        primaryKey: "_id",
+        embedded: true,
         properties: {
-            _id: "uuid",
-            name: "string",
-            lastname: "string",
+            _id: "objectId",
             category: "string",
             amount: "int",
             comments: "string",
@@ -65,13 +57,50 @@ const Home = () => {
         }
     }
 
+    
+    const Expenses = {
+        name: "Expenses",
+        embedded: true,
+        properties: {
+            _id: "objectId",
+            category: "string",
+            amount: "int",
+            comments: "string",
+            dob: "date"
+        }
+    }
+/* ************************************************************************************************ */
+
+
+
     type IObjet = {
         name: string,
         primaryKey: string,
         Incomes: IncomesType[],
         Expenses: ExpensesType[],
+        
     }
     
+    type IncomesType = {
+        _id: string,
+        category: string,
+        amount: number,
+        comments: string,
+        dob: Date
+    }
+    type ExpensesType = {
+        _id: string,
+        category: string,
+        amount: number,
+        comments: string,
+        dob: Date
+    }
+
+
+
+
+
+
     type IProperties = {
         _id: string,
         name: string,
@@ -81,24 +110,7 @@ const Home = () => {
         comments: string,
         dob: Date
     }
-    type IncomesType = {
-        _id: string,
-        name: string,
-        lastname: string,
-        category: string,
-        amount: number,
-        comments: string,
-        dob: Date
-    }
-    type ExpensesType = {
-        _id: string,
-        name: string,
-        lastname: string,
-        category: string,
-        amount: number,
-        comments: string,
-        dob: Date
-    }
+ 
 /*     type AllType = {
         IncomesType: IncomesType[],
         ExpensesType: ExpensesType[],
@@ -130,11 +142,11 @@ const Home = () => {
 
     const DeleteAllUser = () => {
         Realm.open({
-            schema: [Expenses, Incomes]
+            schema: [User, Incomes, Expenses]
         }).then(realm => {
             realm.write(() => {
                 realm.delete(
-                    realm.objects("Incomes")//.filtered("name = 'Aline'")
+                    realm.objects("User")//.filtered("name = 'Aline'")
                   );
             })
             console.log("Delete user successfully");
@@ -149,7 +161,7 @@ const Home = () => {
     
     
     
-    
+/*     
     const AddUserExpenses = () => {
         Realm.open({
             schema: [Expenses]
@@ -172,26 +184,38 @@ const Home = () => {
         }).catch(err => {
             console.log('error: ', err);
         })
-    }
+    } */
+
+
+
 
     const AddUserIncomes = () => {
         Realm.open({
-            schema: [Incomes]
+            schema: [User, Incomes, Expenses]
         }).then(realm => {
             realm.write(() => {
-                realm.create('Incomes', {
-                        _id: new UUID(),
-                        name: 'Olivier',
-                        lastname: 'Dray',
-                        category: 'Addidas',
-                        amount: 1234,
-                        comments: "commentaire",
-                        dob: new Date()
+                    realm.create('User', {
+                        _id: MyObjectIdUser,
+                        name: 'User',
+                        Expenses: {
+                             _id: MyObjectIdExpense,
+                             category: 'Puma',
+                             amount: 1234,
+                             comments: "commentaire",
+                             dob: new Date() 
+                         }, 
+                          Incomes: {
+                            _id: MyObjectIdIncome,
+                            category: 'Nike',
+                            amount: 23455,
+                            comments: "commentaire",
+                            dob: new Date() 
+                        },
                 })
             })
             console.log("Add user successfully");
-
-            setMyUser([...realm.objects<IObjet>('Incomes')])
+            console.log('User', realm.objects('User'));
+            setMyUser([...realm.objects<IObjet>('User')])
             realm.close()
         }).catch(err => {
             console.log('error: ', err);
@@ -201,10 +225,10 @@ const Home = () => {
     
     const ShowAllUser = () => {
         Realm.open({
-            schema: [Incomes]
+            schema: [User, Incomes, Expenses]
         }).then(realm => {
-            setMyUser([...realm.objects<IObjet>('Incomes')])
-            console.log('Incomes', realm.objects('Incomes'));
+            setMyUser([...realm.objects<IObjet>('User')])
+            console.log('User', realm.objects('User'));
             
         })
     };
