@@ -130,11 +130,11 @@ const Home = () => {
 
     const DeleteAllUser = () => {
         Realm.open({
-            schema: [Expenses, Incomes, User]
+            schema: [Expenses, Incomes]
         }).then(realm => {
             realm.write(() => {
                 realm.delete(
-                    realm.objects("User")//.filtered("name = 'Aline'")
+                    realm.objects("Incomes")//.filtered("name = 'Aline'")
                   );
             })
             console.log("Delete user successfully");
@@ -150,24 +150,12 @@ const Home = () => {
     
     
     
-    const AddUser = () => {
+    const AddUserExpenses = () => {
         Realm.open({
-            schema: [Expenses, Incomes, User]
+            schema: [Expenses]
         }).then(realm => {
             realm.write(() => {
-                realm.create('User', {
-                    _id: new UUID(),
-                    name: 'User',
-                    Incomes: [{
-                        _id: new UUID(),
-                        name: 'Aline',
-                        lastname: 'Must',
-                        category: 'Nike',
-                        amount: 1234,
-                        comments: "commentaire",
-                        dob: new Date()
-                    }],
-                    Expenses: [{
+                realm.create('Expenses', {
                         _id: new UUID(),
                         name: 'Olivier',
                         lastname: 'Dray',
@@ -175,12 +163,35 @@ const Home = () => {
                         amount: 1234,
                         comments: "commentaire",
                         dob: new Date()
-                    }], 
                 })
             })
             console.log("Add user successfully");
 
-            setMyUser([...realm.objects<IObjet>('User')])
+            setMyUser([...realm.objects<IObjet>('Expenses')])
+            realm.close()
+        }).catch(err => {
+            console.log('error: ', err);
+        })
+    }
+
+    const AddUserIncomes = () => {
+        Realm.open({
+            schema: [Incomes]
+        }).then(realm => {
+            realm.write(() => {
+                realm.create('Incomes', {
+                        _id: new UUID(),
+                        name: 'Olivier',
+                        lastname: 'Dray',
+                        category: 'Addidas',
+                        amount: 1234,
+                        comments: "commentaire",
+                        dob: new Date()
+                })
+            })
+            console.log("Add user successfully");
+
+            setMyUser([...realm.objects<IObjet>('Incomes')])
             realm.close()
         }).catch(err => {
             console.log('error: ', err);
@@ -190,31 +201,24 @@ const Home = () => {
     
     const ShowAllUser = () => {
         Realm.open({
-            schema: [Expenses, Incomes, User]
+            schema: [Incomes]
         }).then(realm => {
-            setMyUser([...realm.objects<IObjet>('User')])
-            console.log('User', realm.objects('User'));
+            setMyUser([...realm.objects<IObjet>('Incomes')])
+            console.log('Incomes', realm.objects('Incomes'));
             
         })
     };
     
     return (
     <View>
-     <Button title="Add User" onPress={AddUser}/>
+     <Button title="Add User" onPress={AddUserIncomes}/>
      <Button title="Show User" onPress={ShowAllUser}/>
      <Button title="Delete User" onPress={DeleteAllUser}/>
      <View>
         {
             myUser.map((item, index) => (
                 <View>
-                     <Text>No: {index}</Text>
-                    <Text>ID: {`${item.Incomes[0]._id}`}</Text>
-                    <Text>Username: {item.Incomes[0].name}</Text>
-                    <Text>lastname: {item.Incomes[0].lastname}</Text> 
-                    <Text>amount: {item.Incomes[0].amount}</Text> 
-                    <Text>category: {item.Incomes[0].category}</Text> 
-                    <Text>comments: {item.Incomes[0].comments}</Text> 
-                    <Text>date: {item.Incomes[0].dob.toString()}</Text>
+                    
                  
                 </View>
             ))
